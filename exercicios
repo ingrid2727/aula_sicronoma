@@ -1,0 +1,84 @@
+Exercícios
+1. [analise_criacao_objetos] Analise o script scripts/load-script.sql quanto a criação de objetos. Altere-o caso julgue necessário, caso necessite melhorias.
+
+Possíveis melhorias:
+
+Melhorar a normalização das tabelas
+Alterar nomenclatura de campos
+Alterar tipo de dado de campos
+Adicionar chaves
+Adicionar comandos que melhorem a execução do script
+Objetivo: Testar sua capacidade analítica para revisar o trabalho de outros desenvolvedores.
+
+2. [sp_deposito] Crie uma procedure que faça um depósito na conta. As especificações dela são:
+
+Parâmetros de entrada: p_conta e p_valor
+Parâmetros de saída: N/A
+Pseudocódigo
+Dada a conta de entrada, verifique se a conta existe.
+Verifique se p_valor é maior que zero. Se sim, continue a execução, senão exiba a mensagem Valor inválido para a operação.
+Caso não exista, exiba a mensagem Conta inexistente.
+Caso exista:
+Inicie uma transação (start transaction);
+Atualize a conta, adicionando o valor à conta.
+Crie uma nova movimentação, informando:
+p_conta
+data atual
+p_valor
+Descrição 'Depósito de ' + p_valor
+Persista a transação (commit);
+2. [sp_saque] Crie uma procedure que faça um saque na conta. As especificações dela são:
+
+Parâmetros de entrada: p_conta e p_valor
+Parâmetros de saída: N/A
+Pseudocódigo
+Dada a conta de entrada, verifique se a conta existe.
+Verifique se p_valor é maior que zero. Se sim, continue a execução, senão exiba a mensagem Valor inválido para a operação.
+Caso não exista, exiba a mensagem Conta inexistente.
+Caso exista:
+Verifique o saldo da conta.
+Se o saldo for menor que p_valor, exiba a mensagem , exiba a mensagem Saldo insuficiente.
+Senão:
+Inicie uma transação (start transaction);
+Atualize a conta, subtraindo o valor da conta.
+Crie uma nova movimentação, informando:
+p_conta
+data atual
+p_valor
+Descrição 'Saque de ' + p_valor
+Persista a transação (commit);
+3. [f_transferencia] Crie uma function que faça uma transferência entre contas. As especificações dela são:
+
+Parâmetros de entrada: p_conta_origem, p_conta_destino e p_valor
+Retorno: v_mensagem_resultado
+Pseudocódigo
+Dada as contas de origem e destino, verifique a existência das mesmas.
+Verifique se p_valor é maior que zero. Se sim, continue a execução, senão atribua Valor inválido para a operação. para v_mensagem_resultado
+Caso não exista, exiba a mensagem Conta de origem inexistente. ou Conta de origem inexistente. conforme o caso e atribua para v_mensagem_resultado
+Caso as contas existam:
+Verifique o saldo da conta origem.
+Se o saldo for menor que p_valor atribua Saldo insuficiente. para v_mensagem_resultado;
+Senão:
+Inicie uma transação (start transaction);
+Atualize a conta de origem, subtraindo o valor da conta de origem.
+Atualize a conta de destino, adicionando o valor à conta destino.
+Crie uma nova movimentação, informando:
+p_conta_origem
+data atual
+p_valor
+Descrição 'Transferência para ' + p_conta_destino + ' de ' + p_valor
+Crie uma nova movimentação, informando:
+p_conta_destino
+data atual
+p_valor
+Descrição 'Transferência de ' + p_conta_origem + ' de ' + p_valor
+Persista a transação (commit);
+Atribua Transferência efetuada com sucesso! para v_mensagem_resultado;
+Retorne v_mensagem_resultado;
+4. [t_nova_conta] Salve o exemplo de aula da trigger t_nova_conta.
+
+5. [t_registra_nova_conta] Salve o exemplo de aula da trigger t_registra_nova_conta.
+
+6. [t_altera_conta] Salve o exemplo de aula da trigger t_altera_conta.
+
+7. [t_nova_conta] Altere a trigger t_nova_conta, de forma a adicionar a dtabertura_conta como a data e hora do de sistema.
