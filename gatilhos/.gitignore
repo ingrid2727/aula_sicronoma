@@ -1,0 +1,51 @@
+DELIMITER $$
+DROP TRIGGER IF EXISTS NOME_TRIGGER$$
+CREATE TRIGGER NOME_TRIGGER [BEFORE|AFTER] [INSERT|DELETE|UPDATE] ON TABELA
+FOR EACH ROW
+BEGIN
+  #PROCEDIMENTOS
+END;
+$$
+/*Exemplos
+Ao criar uma conta, normalizar saldos*/
+
+DELIMITER $$
+DROP TRIGGER IF EXISTS t_nova_conta$$
+CREATE TRIGGER t_nova_conta BEFORE INSERT ON conta
+FOR EACH ROW
+BEGIN
+   IF (NEW.saldo < 0) THEN
+      SET NEW.saldo = 0;
+   END IF;
+END;
+$$
+/*Ao criar uma conta, registrar abertura*/
+DELIMITER $$
+DROP TRIGGER IF EXISTS t_registra_nova_conta$$
+CREATE TRIGGER t_registra_nova_conta AFTER INSERT ON conta
+FOR EACH ROW
+BEGIN
+   INSERT INTO movimentacao VALUES
+      (NEW.numero_conta, NOW(), NEW.saldo, CONCAT('Conta ', NEW.numero_conta, ' aberta com ', NEW.saldo));
+END;
+$$
+/*Ao atualizar uma conta, registrar alteração*/
+DELIMITER $$
+DROP TRIGGER IF EXISTS t_altera_conta$$
+CREATE TRIGGER t_altera_conta AFTER UPDATE ON conta
+FOR EACH ROW
+BEGIN
+   INSERT INTO movimentacao VALUES
+      (NEW.numero_conta
+      , NOW()
+      , NEW.saldo
+      , CONCAT('Alteração manual de dados em '
+               , NEW.numero_conta
+               , '. Saldo anterior: '
+               , OLD.saldo
+               , '. Saldo atual: '
+               , NEW.saldo
+               )
+      );
+END;
+$$
