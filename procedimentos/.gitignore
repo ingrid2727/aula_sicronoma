@@ -1,0 +1,115 @@
+use bancario;
+
+use bancario;
+
+/*2. [sp_deposito] Crie uma procedure que faça um depósito na conta. As especificações dela são:
+
+Parâmetros de entrada: p_conta e p_valor
+Parâmetros de saída: N/A
+Pseudocódigo
+Dada a conta de entrada, verifique se a conta existe.
+Verifique se p_valor é maior que zero. Se sim, continue a execução, senão exiba a mensagem Valor inválido para a operação.
+Caso não exista, exiba a mensagem Conta inexistente.
+Caso exista:
+Inicie uma transação (start transaction);
+Atualize a conta, adicionando o valor à conta.
+Crie uma nova movimentação, informando:
+p_conta
+data atual
+p_valor
+Descrição 'Depósito de ' + p_valor
+Persista a transação (commit);*/
+
+/*
+criar procedure ,declarar variaveis ,estabelecer um metode de entrada ,realizar confirmacao de conta existe ,comecar loop tracao conta
+informando saldo e data 
+*/
+
+
+DELIMITER $$
+DROP PROCEDURE IF EXISTS sp_deposito$$
+CREATE PROCEDURE sp_deposito(IN p_conta SMALLINT(5) UNSIGNED, 
+                 IN p_valor DECIMAL(10 , 2))
+BEGIN
+    DECLARE descricao varchar(55);
+    DECLARE v_saldo , c_conta int;
+    
+    SELECT numero_conta INTO c_conta
+    FROM conta 
+    WHERE numero_conta = p_conta LIMIT 1;
+    
+    SELECT saldo 
+    INTO v_saldo
+    FROM conta 
+    WHERE c_conta = p_conta LIMIT 1;
+    
+    IF (c_conta=p_conta) THEN
+        IF (p_valor>0) THEN
+        
+            START TRANSACTION;
+                SET SQL_SAFE_UPDATES=0;
+                
+                UPDATE conta 
+                SET saldo = saldo + p_valor 
+                WHERE nr_conta = p_conta;
+                SELECT CONCAT('Seu saldo',p_valor) INTO descricao;  
+                INSERT INTO movimentacao (nr_conta,dtmov_conta,vl_mov,ds_mov) 
+                    values(c_conta,default,p_valor,descricao);
+                SET SQL_SAFE_UPDATES=1;
+            COMMIT;
+        ELSE
+            SELECT concat(v_saldo,' Valor inválido para a operação.');
+        END IF;
+ 
+ 
+    END IF;
+END$$
+DELIMITER ;
+	/*Inicio da Procedure Saque*/
+DELIMITER $$
+DROP PROCEDURE IF EXISTS sp_saque$$
+CREATE PROCEDURE sp_saque(IN p_conta SMALLINT(5) UNSIGNED, 
+                 IN p_valor DECIMAL(10 , 2))
+BEGIN
+    DECLARE descricao varchar(55);
+    DECLARE v_saldo , c_conta int;
+    
+    SELECT numero_conta INTO c_conta
+    FROM conta 
+    WHERE numero_conta = p_conta LIMIT 1;
+    
+    SELECT saldo 
+    INTO v_saldo
+    FROM conta 
+    WHERE c_conta = p_conta LIMIT 1;
+
+    IF (c_conta=p_conta) THEN
+        IF (p_valor>0) THEN
+        
+            START TRANSACTION;
+                SET SQL_SAFE_UPDATES=0;
+
+	
+     if(saldo > p_conta )THEN
+	
+
+                UPDATE conta 
+                SET saldo = saldo + p_valor 
+                WHERE nr_conta = p_conta;
+                SELECT CONCAT('Seu saldo é:; ',p_valor) INTO descricao;  
+                INSERT INTO movimentacao (nr_conta,dtmov_conta,vl_mov,ds_mov) 
+                    values(c_conta,default,p_valor,descricao);
+                SET SQL_SAFE_UPDATES=1;
+            COMMIT;
+        ELSE
+            SELECT concat(v_saldo,' Valor inválido para a operação.');
+
+     
+            SELECT concat(v_saldo,' Valor inválido para a operação.');
+        END IF;
+ 
+ 
+    END IF;
+END
+DELIMITER ;
+	
