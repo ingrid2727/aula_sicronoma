@@ -1,0 +1,134 @@
+
+/*3. [f_transferencia] Crie uma função que faça uma transferência entre contas. As especificações dela são:
+Parâmetros de entrada: p_conta_origem, p_conta_destino e p_valor
+Retorno: v_mensagem_resultado
+Pseudocódigo
+Dada as contas de origem e destino, existência a existência das mesmas.
+Verifique se p_valor é maior que zero. Se sim, continue uma execução, senão atribua Valor inválido para uma operação. para v_mensagem_resultado
+Caso não exista, exibição a mensagem Conta de origem inexistente. ou Conta de origem inexistente. conforme o caso e atribuição para v_mensagem_resultado
+Caso as contas existam:
+Verifique o saldo da conta origem.
+Se o saldo for menor que p_valor atribua Saldo insuficiente. para v_mensagem_resultado;
+Senão:
+Iniciar uma transação (iniciar transação);
+Atualize a conta de origem, subtraindo o valor da conta de origem.
+Atualize a conta de destino, adicionando o valor à conta destino.
+Crie uma nova movimentação, informando:
+p_conta_origem
+dados atuais
+p_valor
+Descrição 'Transferência para' + p_conta_destino + 'de' + p_valor
+Crie uma nova movimentação, informando:
+p_conta_destino
+dados atuais
+p_valor
+Descrição 'Transferência de' + p_conta_origem + 'de' + p_valor
+Persista uma transação (commit);
+Atribua Transferência efetuada com sucesso! para v_mensagem_resultado;
+Retorne v_mensagem_resultado;
+
+*/
+use bancario;
+DELIMITER $$
+DROP FUNCTION if exists f_transferencia$$
+
+CREATE FUNCTION f_transferencia(p_conta_origem SMALLINT(5) ,  p_conta_destino SMALLINT(5) ,v_mensagem_resultado varchar(100),p_valor DECIMAL(10, 2))
+                               RETURNS SMALLINT
+BEGIN
+
+   
+	DECLARE descricao varchar(55);
+	DECLARE saldo,conta,v_saldo smallint(50);
+     
+        
+	SELECT numero_conta INTO v_saldo
+    FROM conta 
+    WHERE numero_conta = p_conta_origem LIMIT 1;
+    
+    SELECT saldo 
+    INTO v_saldo
+    FROM conta 
+    WHERE c_conta = p_conta_destino LIMIT 1;
+    
+     IF (c_conta=p_conta) THEN
+        IF (p_valor>0) THEN
+        
+                     START TRANSACTION;
+                SET SQL_SAFE_UPDATES=1;
+                
+IF(saldo >p_conta_origem)THEN
+				UPDATE conta 
+                SET saldo = saldo - p_valor 
+                 WHERE nr_conta = p_conta_origem;
+                 Return CONCAT(p_conta_origem , v_mesagem_resultado) ;  
+                
+		ELSEIF(saldo > p_conta_origem )THEN
+				UPDATE conta 
+				SET saldo = saldo + p_valor 
+                WHERE nr_conta = p_conta_destino;
+               Return CONCAT(p_conta_destino , v_mesagem_resultado) ;  
+            COMMIT;
+			
+        ELSE
+                SELECT CONCAT('Transferência efetuada com sucesso!',nr_conta )
+         RETURNS into v_mensagem_resultado;
+            COMMIT;
+            
+            SELECT concat(v_saldo,' Valor inválido para a operação.');
+        END IF;
+      END IF;
+          END IF;
+
+END $$
+DELIMITER ;
+
+DELIMITER $$
+DROP FUNCTION if exists f_transferencia$$
+
+CREATE FUNCTION f_transferencia(p_conta_origem SMALLINT(5) ,  p_conta_destino SMALLINT(5) ,v_mensagem_resultado varchar(100),p_valor DECIMAL(10, 2))
+                               RETURNS SMALLINT
+BEGIN
+    DECLARE descricao varchar(55);
+    DECLARE v_saldo , c_conta int;
+ 
+     
+    SELECT numero_conta INTO v_saldo
+    FROM conta 
+    WHERE numero_conta = p_conta_origem LIMIT 1;
+    
+    SELECT saldo 
+    INTO v_saldo
+    FROM conta 
+    WHERE c_conta = p_conta_destino LIMIT 1;
+    
+
+		 IF (c_conta=p_conta) THEN
+			IF (p_valor>0) THEN
+			
+						 START TRANSACTION;
+					SET SQL_SAFE_UPDATES=1;
+		 if(saldo > p_conta )THEN
+
+	IF(saldo >p_conta_origem)THEN
+					UPDATE conta 
+					SET saldo = saldo - p_valor 
+					 WHERE nr_conta = p_conta_origem;
+					 Return CONCAT(p_conta_origem , v_mesagem_resultado) ;  
+					
+			ELSEIF(saldo > p_conta_origem )THEN
+					UPDATE conta 
+					SET saldo = saldo + p_valor 
+					WHERE nr_conta = p_conta_destino;
+				   Return CONCAT(p_conta_destino , v_mesagem_resultado) ;  
+				COMMIT;
+			ELSE
+				SELECT concat(v_saldo,' Valor inválido para a operação.');
+
+		 
+				SELECT concat(v_saldo,' Valor inválido para a operação.');
+			END IF;
+	 
+ 
+    END IF;
+END
+DELIMITER ;
